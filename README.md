@@ -1,1 +1,1 @@
-# good-boy-dogger
+# Good Boy Dogger
