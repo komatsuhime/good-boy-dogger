@@ -55,6 +55,13 @@
         dogger.move(dog);
         dogger.contain(dog, dogger.stage.localBounds);
 
+		
+garbages.forEach(function(garbage){
+dogger.contain(garbage,dogger.stage.localBounds);
+garbage.x += 5;
+garbage.y += 5;
+});
+		
         var garbageEaten = false;
         garbages.forEach(function(garbage) {
             if (dogger.hitTestRectangle(dog, garbage)) {
