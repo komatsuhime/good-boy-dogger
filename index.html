@@ -40,8 +40,7 @@
             stuffs.push(stuff);
             gameScene.addChild(stuff);
         }
-
-
+console.log(stuffs);
         obstacles = [];
 
         dogger.fourKeyController(dog, 24, 38, 39, 40, 37);
@@ -52,10 +51,16 @@
         dogger.move(dog);
         dogger.contain(dog, dogger.stage.localBounds);
 
-        if ((dogger.key.leftArrow.isDown || dogger.key.upArrow.isDown || dogger.key.rightArrow.isDown || dogger.key.downArrow.isDown)) {
+        if (dogger.key.leftArrow.isDown || dogger.key.upArrow.isDown || dogger.key.rightArrow.isDown || dogger.key.downArrow.isDown) {
             obstacle = dogger.rectangle(24, 24, "grey");
-            obstacle.x = 24 * (dogger.randomInt(0, 19));
-            obstacle.y = 24 * (dogger.randomInt(0, 19));
+
+            var occupiedX = stuffs.map(function(s){return s.x});
+            var occupiedY = stuffs.map(function(s){return s.y});
+            var positionX = 24 * (dogger.randomInt(0, 19));
+            var positionY = 24 * (dogger.randomInt(0, 19));
+            obstacle.x = occupied(occupiedX,positionX);
+            obstacle.y = occupied(occupiedY,positionY);
+
             obstacles.push(obstacle);
             gameScene.addChild(obstacle);
             dogger.pause();
@@ -64,6 +69,16 @@
 
         function resume() {
             dogger.resume();
+        }
+
+        function occupied (a,v)
+        {
+            if (a.indexOf(v) == -1) {
+                return v;
+            } else {
+               v = 24 * (dogger.randomInt(0, 19));
+               occupied(a,v);
+            }
         }
 
         var obstacleGrabbed = false;
@@ -77,15 +92,19 @@
         });
 
         if (obstacleGrabbed == true) {
+        	//moves to the left
         	if (dog.vx < 0) {
         		dog.x += 24;
         	}
+        	//moves to the right
         	if (dog.vx > 0) {
         		dog.x -= 24;
         	}
+        	//moves up
         	if (dog.vy < 0) {
         		dog.y += 24;
         	}
+        	//moves down
         	if (dog.vy > 0) {
         		dog.y -= 24;
         	}
