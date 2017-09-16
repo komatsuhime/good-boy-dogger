@@ -1,97 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
 
-  <head>
+<head>
     <meta charset="UTF-8">
     <title>Good Boy Dogger</title>
     <!-- by Carla Faroldi -->
     <script src="js/ga.js"></script>
     <script src="js/plugins.js"></script>
-  </head>
+</head>
 
-  <body>
-<script>
-var dogger = ga(512, 512, setup);
+<body>
+    <script>
+    var dogger = ga(480, 480, setup);
+    dogger.start();
 
-dogger.start();
+    var dog, stuff, obstacle, barks, alerta, gameScene, GameOverScene;
+    var dogMoved = false;
 
-var dog, food, garbage, barks, gameScene, GameOverScene;
+ //   	alerta = dogger.text(".", "20px Verdana", "black", 120, 120);
+ //   	alerta.x = 120;
+	// alerta.y = 120;
 
-function setup() {
-	dogger.canvas.style.border = "1px black dashed";
-	dogger.backgroundColor = "white";
+    function setup() {
+        dogger.canvas.style.border = "1px black dashed";
+        dogger.backgroundColor = "white";
 
-	gameScene = dogger.group();
-	dog = dogger.rectangle(24, 24, "pink");
-	dog.x = 68;
-	dog.y = dogger.canvas.height / 2 - dog.halfHeight;
-	gameScene.addChild(dog);
+        gameScene = dogger.group();
+        dog = dogger.rectangle(24, 24, "pink");
+        dog.x = dogger.canvas.width / 2 - dog.width;
+        dog.y = dogger.canvas.height / 2 - dog.height;
+        gameScene.addChild(dog);
 
-	food = dogger.rectangle(24, 24, "orange");
-	food.x = 30;
-	food.y = 30;
-	food.eaten = false;
-	gameScene.addChild(food);
-
-	var garbageTotal = dogger.randomInt(1, 6);
-
-	garbages = [];
-
-	for (var i = 0; i < garbageTotal; i++)
-	{
-		garbage = dogger.rectangle(24, 24, "grey");
-		garbage.x = dogger.randomInt(0, 513);
-		garbage.y = dogger.randomInt(0, 513);
-		garbages.push(garbage);
-		gameScene.addChild(garbage);
-	}
+        stuffs = [];
+        for (var i = 0; i < 5; i++) {
+            stuff = dogger.rectangle(24, 24, "orange");
+            stuff.x = 24 * (dogger.randomInt(0, 19));
+            stuff.y = 24 * (dogger.randomInt(0, 19));
+            stuff.grabbed = false;
+            stuffs.push(stuff);
+            gameScene.addChild(stuff);
+        }
 
 
+        obstacles = [];
 
-	dogger.fourKeyController(dog, 5, 38, 39, 40, 37);
-	dogger.state = play;
-}
+        dogger.fourKeyController(dog, 24, 38, 39, 40, 37);
+        dogger.state = play;
+    }
 
-function play() {
-	dogger.move(dog);
-	dogger.contain(dog, dogger.stage.localBounds);
+    function play() {
+        dogger.move(dog);
+        dogger.contain(dog, dogger.stage.localBounds);
 
-	if (dogger.move(dog)) {
-	var test = dogger.rectangle(10, 10, "blue", 10, 20);
-	gameScene.addChild(test);
-	}
-	garbages.forEach(function(garbage) {
-						 dogger.contain(garbage, dogger.stage.localBounds);
-						 garbage.x += 5;
-						 garbage.y += 5;
-					 });
+        if ((dogger.key.leftArrow.isDown || dogger.key.upArrow.isDown || dogger.key.rightArrow.isDown || dogger.key.downArrow.isDown)) {
+            obstacle = dogger.rectangle(24, 24, "grey");
+            obstacle.x = 24 * (dogger.randomInt(0, 19));
+            obstacle.y = 24 * (dogger.randomInt(0, 19));
+            obstacles.push(obstacle);
+            gameScene.addChild(obstacle);
+            dogger.pause();
+            dogger.wait(125, resume);
+        }
 
-	var garbageEaten = false;
-	garbages.forEach(function(garbage) {
-						 if (dogger.hitTestRectangle(dog, garbage))
-						 {
-							 garbageEaten = true;
-						 }
-					 });
+        function resume() {
+            dogger.resume();
+        }
 
-	if (garbageEaten)
-	{
-		dog.alpha = 0.5;
-	}
-	else
-	{
-		dog.alpha = 1;
-	}
+        var obstacleGrabbed = false;
 
-	if (dogger.hitTestRectangle(dog, food))
-	{
-		food.x = dog.x + 12;
-		food.y = dog.y + 12;
-		food.eaten = true;
-		console.log(food.eaten);
-	}
-}
-</script>
-  </body>
+        obstacles.forEach(function(obstacle) {
+            if (dogger.hitTestRectangle(dog, obstacle)) {
+                obstacleGrabbed = true;
+            } else {
+            	// obstacleGrabbed = false;
+            }
+        });
+
+        if (obstacleGrabbed == true) {
+        	if (dog.vx < 0) {
+        		dog.x += 24;
+        	}
+        	if (dog.vx > 0) {
+        		dog.x -= 24;
+        	}
+        	if (dog.vy < 0) {
+        		dog.y += 24;
+        	}
+        	if (dog.vy > 0) {
+        		dog.y -= 24;
+        	}
+        }
+    }
+
+    </script>
+    </body>
 
 </html>
