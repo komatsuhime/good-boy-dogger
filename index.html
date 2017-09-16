@@ -14,15 +14,17 @@
     var dogger = ga(480, 480, setup);
     dogger.start();
 
-    var dog, stuff, obstacle, barks, alerta, win, gameScene, GameOverScene;
+    var dog, stuff, obstacle, barksLeft, bark, alerta, win, gameScene, GameOverScene;
     var dogMoved = false;
     win = 0;
+    var test = 0;
 
-    //      alerta = dogger.text(".", "20px Verdana", "black", 120, 120);
-    //      alerta.x = 120;
+
+    // alerta = dogger.text(".", "20px Verdana", "black", 120, 120);
+    // alerta.x = 120;
     // alerta.y = 120;
 
-    function setup() {
+function setup() {
         dogger.canvas.style.border = "1px black dashed";
         dogger.backgroundColor = "white";
 
@@ -31,6 +33,11 @@
         dog.x = dogger.canvas.width / 2 - dog.width;
         dog.y = dogger.canvas.height / 2 - dog.height;
         gameScene.addChild(dog);
+
+        bark = dogger.keyboard(98);
+           bark.press = function() {
+                 console.log(bark);
+            };
 
         stuffs = [];
         for (var i = 0; i < 5; i++) {
@@ -45,9 +52,9 @@
 
         dogger.fourKeyController(dog, 24, 38, 39, 40, 37);
         dogger.state = play;
-    }
+}
 
-    function play() {
+function play() {
         dogger.move(dog);
         dogger.contain(dog, dogger.stage.localBounds);
 
@@ -92,6 +99,14 @@
 
         if (win == 5) {
             // WON!
+        }
+
+        //FIX!!
+        if (dogger.key.space.isDown) {
+            obstacles = obstacles.filter(function(obstacle){
+                gameScene.remove(obstacle);
+                return false;
+            });
         }
 
         var obstacleHit = false;
