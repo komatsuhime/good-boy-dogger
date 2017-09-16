@@ -11,25 +11,29 @@
 
 <body>
     <script>
-    var dogger = ga(480, 480, setup);
+    var doggerWidth	 = 480;
+    var doggerHeight = 480;
+    var dogger = ga(doggerWidth, doggerHeight, setup);
     dogger.start();
 
-    var dog, stuff, obstacle, barksLeft, bark, alerta, win, gameScene, GameOverScene;
-    var dogMoved = false;
-    win = 0;
-    var test = 0;
-
+    var dog, stuff, obstacle, barksLeft, bark, alerta, gameScene, GameOverScene;
+    var win = 0;
+    
 
     alerta = dogger.text(" ", "20px Verdana", "fuchsia", 120, 120);
     alerta.x = 120;
     alerta.y = 120;
+    
+    var size;
 
 function setup() {
         dogger.canvas.style.border = "1px black dashed";
         dogger.backgroundColor = "white";
-
+        
+        size = 24;
+        
         gameScene = dogger.group();
-        dog = dogger.rectangle(24, 24, "pink");
+        dog = dogger.rectangle(size, size, "pink");
         dog.x = dogger.canvas.width / 2 - dog.width;
         dog.y = dogger.canvas.height / 2 - dog.height;
         gameScene.addChild(dog);
@@ -41,16 +45,16 @@ function setup() {
 
         stuffs = [];
         for (var i = 0; i < 5; i++) {
-            stuff = dogger.rectangle(24, 24, "orange");
-            stuff.x = 24 * (dogger.randomInt(0, 19));
-            stuff.y = 24 * (dogger.randomInt(0, 19));
+            stuff = dogger.rectangle(size, size, "orange");
+            stuff.x = size * (dogger.randomInt(0, 19));
+            stuff.y = size * (dogger.randomInt(0, 19));
             stuffs.push(stuff);
             gameScene.addChild(stuff);
         }
-
+        
         obstacles = [];
 
-        dogger.fourKeyController(dog, 24, 38, 39, 40, 37);
+        dogger.fourKeyController(dog, size, 38, 39, 40, 37);
         dogger.state = play;
 }
 
@@ -59,12 +63,12 @@ function play() {
         dogger.contain(dog, dogger.stage.localBounds);
 
         if (dogger.key.leftArrow.isDown || dogger.key.upArrow.isDown || dogger.key.rightArrow.isDown || dogger.key.downArrow.isDown) {
-            obstacle = dogger.rectangle(24, 24, "grey");
+            obstacle = dogger.rectangle(size, size, "grey");
 
-            var occupiedX = stuffs.map(function(s) { return s.x });
-            var occupiedY = stuffs.map(function(s) { return s.y });
-            var positionX = 24 * (dogger.randomInt(0, 19));
-            var positionY = 24 * (dogger.randomInt(0, 19));
+            var occupiedX = stuffs.map(function(s) { return s.x; });
+            var occupiedY = stuffs.map(function(s) { return s.y; });
+            var positionX = size * (dogger.randomInt(0, 19));
+            var positionY = size * (dogger.randomInt(0, 19));
             obstacle.x = occupied(occupiedX, positionX);
             obstacle.y = occupied(occupiedY, positionY);
 
@@ -78,12 +82,12 @@ function play() {
             dogger.resume();
         }
 
-        function occupied(a, v) {
+        function occupied(a, v, size) {
             if (a.indexOf(v) == -1) {
                 return v;
             } else {
-                v = 24 * (dogger.randomInt(0, 19));
-                occupied(a, v);
+                v = size * (dogger.randomInt(0, 19));
+                occupied(a, v, size);
             }
         }
 
@@ -122,19 +126,19 @@ function play() {
         if (obstacleHit == true) {
             //moves to the left
             if (dog.vx < 0) {
-                dog.x += 24;
+                dog.x += size;
             }
             //moves to the right
             if (dog.vx > 0) {
-                dog.x -= 24;
+                dog.x -= size;
             }
             //moves up
             if (dog.vy < 0) {
-                dog.y += 24;
+                dog.y += size;
             }
             //moves down
             if (dog.vy > 0) {
-                dog.y -= 24;
+                dog.y -= size;
             }
         }
     }
