@@ -14,12 +14,13 @@
     var dogger = ga(480, 480, setup);
     dogger.start();
 
-    var dog, stuff, obstacle, barks, alerta, gameScene, GameOverScene;
+    var dog, stuff, obstacle, barks, alerta, win, gameScene, GameOverScene;
     var dogMoved = false;
+    win = 0;
 
- //   	alerta = dogger.text(".", "20px Verdana", "black", 120, 120);
- //   	alerta.x = 120;
-	// alerta.y = 120;
+    //      alerta = dogger.text(".", "20px Verdana", "black", 120, 120);
+    //      alerta.x = 120;
+    // alerta.y = 120;
 
     function setup() {
         dogger.canvas.style.border = "1px black dashed";
@@ -36,11 +37,10 @@
             stuff = dogger.rectangle(24, 24, "orange");
             stuff.x = 24 * (dogger.randomInt(0, 19));
             stuff.y = 24 * (dogger.randomInt(0, 19));
-            stuff.grabbed = false;
             stuffs.push(stuff);
             gameScene.addChild(stuff);
         }
-console.log(stuffs);
+
         obstacles = [];
 
         dogger.fourKeyController(dog, 24, 38, 39, 40, 37);
@@ -54,12 +54,12 @@ console.log(stuffs);
         if (dogger.key.leftArrow.isDown || dogger.key.upArrow.isDown || dogger.key.rightArrow.isDown || dogger.key.downArrow.isDown) {
             obstacle = dogger.rectangle(24, 24, "grey");
 
-            var occupiedX = stuffs.map(function(s){return s.x});
-            var occupiedY = stuffs.map(function(s){return s.y});
+            var occupiedX = stuffs.map(function(s) { return s.x });
+            var occupiedY = stuffs.map(function(s) { return s.y });
             var positionX = 24 * (dogger.randomInt(0, 19));
             var positionY = 24 * (dogger.randomInt(0, 19));
-            obstacle.x = occupied(occupiedX,positionX);
-            obstacle.y = occupied(occupiedY,positionY);
+            obstacle.x = occupied(occupiedX, positionX);
+            obstacle.y = occupied(occupiedY, positionY);
 
             obstacles.push(obstacle);
             gameScene.addChild(obstacle);
@@ -71,47 +71,59 @@ console.log(stuffs);
             dogger.resume();
         }
 
-        function occupied (a,v)
-        {
+        function occupied(a, v) {
             if (a.indexOf(v) == -1) {
                 return v;
             } else {
-               v = 24 * (dogger.randomInt(0, 19));
-               occupied(a,v);
+                v = 24 * (dogger.randomInt(0, 19));
+                occupied(a, v);
             }
         }
 
-        var obstacleGrabbed = false;
-
-        obstacles.forEach(function(obstacle) {
-            if (dogger.hitTestRectangle(dog, obstacle)) {
-                obstacleGrabbed = true;
+        stuffs = stuffs.filter(function(stuff) {
+            if (dogger.hit(dog, stuff)) {
+                win += 1;
+                gameScene.remove(stuff);
+                return false;
             } else {
-            	// obstacleGrabbed = false;
+                return true;
             }
         });
 
-        if (obstacleGrabbed == true) {
-        	//moves to the left
-        	if (dog.vx < 0) {
-        		dog.x += 24;
-        	}
-        	//moves to the right
-        	if (dog.vx > 0) {
-        		dog.x -= 24;
-        	}
-        	//moves up
-        	if (dog.vy < 0) {
-        		dog.y += 24;
-        	}
-        	//moves down
-        	if (dog.vy > 0) {
-        		dog.y -= 24;
-        	}
+        if (win == 5) {
+            // WON!
+        }
+
+        var obstacleHit = false;
+
+        obstacles.forEach(function(obstacle) {
+            if (dogger.hitTestRectangle(dog, obstacle)) {
+                obstacleHit = true;
+            } else {
+                // obstacleHit = false;
+            }
+        });
+
+        if (obstacleHit == true) {
+            //moves to the left
+            if (dog.vx < 0) {
+                dog.x += 24;
+            }
+            //moves to the right
+            if (dog.vx > 0) {
+                dog.x -= 24;
+            }
+            //moves up
+            if (dog.vy < 0) {
+                dog.y += 24;
+            }
+            //moves down
+            if (dog.vy > 0) {
+                dog.y -= 24;
+            }
         }
     }
-
     </script>
-    </body>
+</body>
 
 </html>
