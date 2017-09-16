@@ -20,9 +20,9 @@
     var test = 0;
 
 
-    // alerta = dogger.text(".", "20px Verdana", "black", 120, 120);
-    // alerta.x = 120;
-    // alerta.y = 120;
+    alerta = dogger.text(" ", "20px Verdana", "fuchsia", 120, 120);
+    alerta.x = 120;
+    alerta.y = 120;
 
 function setup() {
         dogger.canvas.style.border = "1px black dashed";
@@ -98,7 +98,7 @@ function play() {
         });
 
         if (win == 5) {
-            // WON!
+           alerta.content = "You won!";
         }
 
         //FIX!!
@@ -139,6 +139,11 @@ function play() {
         }
     }
     </script>
+    <p>Move and pick up the orange squares to win. You're a dog, by the way.</p>
+    <ul>
+        <li>Arrow keys: move</li>
+        <li>Spacebar: bark (remove all obstacles)</li>
+    </ul>
 </body>
 
 </html>
