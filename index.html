@@ -18,6 +18,7 @@
 
     var dog, stuff, obstacle, barksLeft, bark, alerta, gameScene, GameOverScene;
     var win = 0;
+    var stuffAmount;
     
 
     alerta = dogger.text(" ", "20px Verdana", "fuchsia", 120, 120);
@@ -31,6 +32,7 @@ function setup() {
         dogger.backgroundColor = "white";
         
         size = 24;
+        stuffAmount = 10;
         
         gameScene = dogger.group();
         dog = dogger.rectangle(size, size, "pink");
@@ -44,7 +46,7 @@ function setup() {
             };
 
         stuffs = [];
-        for (var i = 0; i < 5; i++) {
+        for (var i = 0; i < stuffAmount; i++) {
             stuff = dogger.rectangle(size, size, "orange");
             stuff.x = size * (dogger.randomInt(0, 19));
             stuff.y = size * (dogger.randomInt(0, 19));
@@ -101,7 +103,7 @@ function play() {
             }
         });
 
-        if (win == 5) {
+        if (win == stuffAmount) {
            alerta.content = "You won!";
         }
 
