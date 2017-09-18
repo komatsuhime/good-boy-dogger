@@ -13,29 +13,30 @@
     <script>
     var doggerWidth	 = 480;
     var doggerHeight = 480;
-    var dogger = ga(doggerWidth, doggerHeight, setup);
+    var dogger = ga(doggerWidth, doggerHeight, setup,["img/dogger.png"]);
     dogger.start();
 
     var dog, stuff, obstacle, barksLeft, bark, alerta, gameScene, GameOverScene;
     var win = 0;
     var stuffAmount;
-    
+
 
     alerta = dogger.text(" ", "20px Verdana", "fuchsia", 120, 120);
     alerta.x = 120;
     alerta.y = 120;
-    
+
     var size;
 
 function setup() {
         dogger.canvas.style.border = "1px black dashed";
         dogger.backgroundColor = "white";
-        
+
         size = 24;
         stuffAmount = 10;
-        
+
         gameScene = dogger.group();
-        dog = dogger.rectangle(size, size, "pink");
+        // dog = dogger.rectangle(size, size, "pink");
+        dog = dogger.sprite("img/dogger.png");
         dog.x = dogger.canvas.width / 2 - dog.width;
         dog.y = dogger.canvas.height / 2 - dog.height;
         gameScene.addChild(dog);
@@ -53,7 +54,7 @@ function setup() {
             stuffs.push(stuff);
             gameScene.addChild(stuff);
         }
-        
+
         obstacles = [];
 
         dogger.fourKeyController(dog, size, 38, 39, 40, 37);
@@ -75,7 +76,7 @@ function play() {
             obstacle.y = occupied(occupiedY, positionY);
 
 occupiedX.push(obstacle.x);
-occupiedY.push(obstacle.y);      
+occupiedY.push(obstacle.y);
 obstacles.push(obstacle);
             gameScene.addChild(obstacle);
             dogger.pause();
