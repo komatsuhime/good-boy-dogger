@@ -74,7 +74,9 @@ function play() {
             obstacle.x = occupied(occupiedX, positionX);
             obstacle.y = occupied(occupiedY, positionY);
 
-            obstacles.push(obstacle);
+occupiedX.push(obstacle.x);
+occupiedY.push(obstacle.y);      
+obstacles.push(obstacle);
             gameScene.addChild(obstacle);
             dogger.pause();
             dogger.wait(125, resume);
