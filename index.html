@@ -16,7 +16,7 @@
     var dogger = ga(doggerWidth, doggerHeight, setup, ["img/dogger.png"]);
     dogger.start();
 
-    var dog, stuff, obstacle, barksLeft, bark, alerta, gameScene, GameOverScene, positionX, positionY, stuffAmount, size, tilesX, tilesY, tiles;
+    var dog, stuff, obstacle, barksLeft, bark, alerta, gameScene, GameOverScene, positionX, positionY, stuffAmount, size, tilesX, tilesY, tiles, stuffX, stuffIndex, obstacleIndex, obstacleX;
     var win = 0;
 
     alerta = dogger.text(" ", "20px Verdana", "fuchsia", 120, 120);
@@ -31,75 +31,43 @@
         maxTiles = doggerWidth / size;
         stuffAmount = 10;
 
-        
-
 
         gameScene = dogger.group();
-        // dog = dogger.rectangle(size, size, "pink");
         dog = dogger.sprite("img/dogger.png");
         dog.x = dogger.canvas.width / 2 - dog.width;
         dog.y = dogger.canvas.height / 2 - dog.height;
         gameScene.addChild(dog);
 
-        bark = dogger.keyboard(98);
-        bark.press = function() {
-            console.log(bark);
-        };
-		
-		/*tiles = [[],[]];
-       
+        // bark = dogger.keyboard(98);
+        // bark.press = function() {
+        //     console.log(bark);
+        // };
+
+        tiles = [];
+
         for (var i = 0; i < maxTiles; i++) {
-		tilesX = i * size;	
-			tiles.push(tilesX);
-	
-        				for (var j = 0; j < maxTiles; j++){
-        
-						tilesY = j * size;
-						
-        				//tiles[i].push(tilesY);
-        }
-            
-        }*/
-		
-		tiles = [];
-       
-        for (var i = 0; i < maxTiles; i++) {
-		
-	
-        				for (var j = 0; j < maxTiles; j++){
-        				tilesX = i * size;	
-			
-						tilesY = j * size;
-						
-        				tiles.push([tilesX,tilesY]);
-        }
-            
+            for (var j = 0; j < maxTiles; j++) {
+                tilesX = i * size;
+                tilesY = j * size;
+                tiles.push([tilesX, tilesY]);
+            }
         }
 
-
-        var stuffX;
-        var stuffY;
+        stuffX = [];
         stuffs = [];
         for (var k = 0; k < stuffAmount; k++) {
             stuff = dogger.rectangle(size, size, "orange");
-            stuffX = size * (dogger.randomInt(0, maxTiles - 1));
-            stuffY = size * (dogger.randomInt(0, maxTiles - 1));
-
-            console.log(stuffX);
-            console.log(stuffY);
-
-            // stuffX = dogger.randomInt(0, maxTiles-1);
-            // stuffY = dogger.randomInt(0, maxTiles-1);
-
-            stuff.x = stuffX;
-			stuff.y = stuffY;
+            stuffIndex = Math.floor(Math.random() * tiles.length);
+            stuffX = tiles[stuffIndex];
+            stuff.x = stuffX[0];
+            stuff.y = stuffX[1];
+            tiles.splice(stuffIndex, 1);
             stuffs.push(stuff);
             gameScene.addChild(stuff);
         }
 
-
-
         obstacles = [];
+        obstacleX = [];
 
         dogger.fourKeyController(dog, size, 38, 39, 40, 37);
         dogger.state = play;
@@ -112,18 +80,15 @@
         if (dogger.key.leftArrow.isDown || dogger.key.upArrow.isDown || dogger.key.rightArrow.isDown || dogger.key.downArrow.isDown) {
             obstacle = dogger.rectangle(size, size, "grey");
 
-            positionX = size * (dogger.randomInt(0, maxTiles - 1));
-            positionY = size * (dogger.randomInt(0, maxTiles - 1));
-
-            
-                obstacle.x = positionX;
-          
-            
-                obstacle.y = positionY;
-            
+            obstacleIndex = Math.floor(Math.random() * tiles.length);
+            obstacleX = tiles[obstacleIndex];
+            obstacle.x = obstacleX[0];
+            obstacle.y = obstacleX[1];
+            tiles.splice(obstacleIndex, 1);
 
             obstacles.push(obstacle);
             gameScene.addChild(obstacle);
+
             dogger.pause();
             dogger.wait(125, resume);
         }
@@ -163,7 +128,7 @@
             }
         });
 
-        if (obstacleHit == true) {
+        if (obstacleHit === true) {
             //moves to the left
             if (dog.vx < 0) {
                 dog.x += size;
