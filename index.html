@@ -16,7 +16,7 @@
     var dogger = ga(doggerWidth, doggerHeight, setup, ["img/dogger.png"]);
     dogger.start();
 
-    var dog, stuff, obstacle, barksLeft, bark, alerta, gameScene, GameOverScene, positionX, positionY, stuffAmount, size, tilesX, tilesY;
+    var dog, stuff, obstacle, barksLeft, bark, alerta, gameScene, GameOverScene, positionX, positionY, stuffAmount, size, tilesX, tilesY, tiles;
     var win = 0;
 
     alerta = dogger.text(" ", "20px Verdana", "fuchsia", 120, 120);
@@ -29,15 +29,9 @@
 
         size = 24;
         maxTiles = doggerWidth / size;
-        stuffAmount = 2;
+        stuffAmount = 10;
 
-        tilesX = [];
-        tilesY = [];
-        for (var i = 0; i < maxTiles; i++) {
-            tilesX.push(i * size);
-            tilesY.push(i * size);
-        }
-
+        
 
 
         gameScene = dogger.group();
@@ -51,6 +45,37 @@
         bark.press = function() {
             console.log(bark);
         };
+		
+		/*tiles = [[],[]];
+       
+        for (var i = 0; i < maxTiles; i++) {
+		tilesX = i * size;	
+			tiles.push(tilesX);
+	
+        				for (var j = 0; j < maxTiles; j++){
+        
+						tilesY = j * size;
+						
+        				//tiles[i].push(tilesY);
+        }
+            
+        }*/
+		
+		tiles = [];
+       
+        for (var i = 0; i < maxTiles; i++) {
+		
+	
+        				for (var j = 0; j < maxTiles; j++){
+        				tilesX = i * size;	
+			
+						tilesY = j * size;
+						
+        				tiles.push([tilesX,tilesY]);
+        }
+            
+        }
+
 
         var stuffX;
         var stuffY;
@@ -66,19 +91,8 @@
             // stuffX = dogger.randomInt(0, maxTiles-1);
             // stuffY = dogger.randomInt(0, maxTiles-1);
 
-            var indexX = tilesX.indexOf(stuffX);
-
-            if (indexX > -1) {
-                tilesX.splice(indexX, 1);
-                stuff.x = stuffX;
-            }
-
-            var indexY = tilesY.indexOf(stuffY);
-
-            if (indexY > -1) {
-                tilesY.splice(indexY, 1);
-                stuff.y = stuffY;
-            }
+            stuff.x = stuffX;
+			stuff.y = stuffY;
             stuffs.push(stuff);
             gameScene.addChild(stuff);
         }
@@ -101,22 +115,12 @@
             positionX = size * (dogger.randomInt(0, maxTiles - 1));
             positionY = size * (dogger.randomInt(0, maxTiles - 1));
 
-            var indexX = tilesX.indexOf(positionX);
-
-            if (indexX > -1) {
-                tilesX.splice(indexX, 1);
-                console.log(tilesX);
-            } else {
+            
                 obstacle.x = positionX;
-            }
-
-            var indexY = tilesY.indexOf(positionY);
-
-            if (indexY > -1) {
-                tilesY.splice(indexY, 1);
-            } else {
+          
+            
                 obstacle.y = positionY;
-            }
+            
 
             obstacles.push(obstacle);
             gameScene.addChild(obstacle);
