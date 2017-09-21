@@ -11,74 +11,79 @@
 
 <body>
     <script>
-    var doggerWidth	 = 480;
+    var doggerWidth = 480;
     var doggerHeight = 480;
-    var dogger = ga(doggerWidth, doggerHeight, setup,["img/dogger.png"]);
+    var dogger = ga(doggerWidth, doggerHeight, setup, ["img/dogger.png"]);
     dogger.start();
 
-    var dog, stuff, obstacle, barksLeft, bark, alerta, gameScene, GameOverScene;
+    var dog, stuff, obstacle, barksLeft, bark, maxSprites, alerta, gameScene, GameOverScene, occupiedX, occupiedY, size, stuffAmount, tiles;
     var win = 0;
-    var stuffAmount;
-
 
     alerta = dogger.text(" ", "20px Verdana", "fuchsia", 120, 120);
     alerta.x = 120;
     alerta.y = 120;
 
-    var size;
-
-function setup() {
+    function setup() {
         dogger.canvas.style.border = "1px black dashed";
         dogger.backgroundColor = "white";
 
-        size = 24;
+        size = 48;
         stuffAmount = 10;
+        maxSprites = doggerWidth/size;
+        maxSprites -= 1; // so I can get a random number from 0 to maxSprites-1
 
         gameScene = dogger.group();
-        // dog = dogger.rectangle(size, size, "pink");
         dog = dogger.sprite("img/dogger.png");
         dog.x = dogger.canvas.width / 2 - dog.width;
         dog.y = dogger.canvas.height / 2 - dog.height;
         gameScene.addChild(dog);
 
-        bark = dogger.keyboard(98);
-           bark.press = function() {
-                 console.log(bark);
-            };
+        dog.interactive = true;
+        // dog.draggable = true;
+
+        // bark = dogger.keyboard(98);
+        // bark.press = function() {
+        //     console.log(bark);
+        // };
 
         stuffs = [];
         for (var i = 0; i < stuffAmount; i++) {
             stuff = dogger.rectangle(size, size, "orange");
-            stuff.x = size * (dogger.randomInt(0, 19));
-            stuff.y = size * (dogger.randomInt(0, 19));
+            stuff.x = size * (dogger.randomInt(0, maxSprites));
+            stuff.y = size * (dogger.randomInt(0, maxSprites));
             stuffs.push(stuff);
             gameScene.addChild(stuff);
         }
+
+        occupiedX = stuffs.map(function(s) { return s.x; });
+        occupiedY = stuffs.map(function(s) { return s.y; });
+        // console.log(occupiedX + " - " + occupiedY);
 
         obstacles = [];
 
         dogger.fourKeyController(dog, size, 38, 39, 40, 37);
         dogger.state = play;
-}
+    }
 
-function play() {
+    function play() {
         dogger.move(dog);
         dogger.contain(dog, dogger.stage.localBounds);
 
         if (dogger.key.leftArrow.isDown || dogger.key.upArrow.isDown || dogger.key.rightArrow.isDown || dogger.key.downArrow.isDown) {
             obstacle = dogger.rectangle(size, size, "grey");
 
-            var occupiedX = stuffs.map(function(s) { return s.x; });
-            var occupiedY = stuffs.map(function(s) { return s.y; });
-            var positionX = size * (dogger.randomInt(0, 19));
-            var positionY = size * (dogger.randomInt(0, 19));
+            var positionX = size * (dogger.randomInt(0, maxSprites));
+            var positionY = size * (dogger.randomInt(0, maxSprites));
+            // console.log(occupied(occupiedX, positionX));
             obstacle.x = occupied(occupiedX, positionX);
             obstacle.y = occupied(occupiedY, positionY);
-
-occupiedX.push(obstacle.x);
-occupiedY.push(obstacle.y);
-obstacles.push(obstacle);
+            // occupiedX.push(obstacle.x);
+            // occupiedY.push(obstacle.y);
+            obstacles.push(obstacle);
             gameScene.addChild(obstacle);
+
+            // console.log(obstacle.x + " - " + obstacle.y);
+
             dogger.pause();
             dogger.wait(125, resume);
         }
@@ -87,12 +92,14 @@ obstacles.push(obstacle);
             dogger.resume();
         }
 
-        function occupied(a, v, size) {
+        function occupied(a, v) {
             if (a.indexOf(v) == -1) {
+                console.log(v + " siiiiii");
                 return v;
             } else {
-                v = size * (dogger.randomInt(0, 19));
-                occupied(a, v, size);
+                v = size * (dogger.randomInt(0, maxSprites));
+                console.log(v + " eeh");
+                occupied(a, v);
             }
         }
 
@@ -107,12 +114,12 @@ obstacles.push(obstacle);
         });
 
         if (win == stuffAmount) {
-           alerta.content = "You won!";
+            alerta.content = "You won!";
         }
 
         //FIX!!
         if (dogger.key.space.isDown) {
-            obstacles = obstacles.filter(function(obstacle){
+            obstacles = obstacles.filter(function(obstacle) {
                 gameScene.remove(obstacle);
                 return false;
             });
