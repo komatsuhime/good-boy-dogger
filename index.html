@@ -16,7 +16,26 @@
     var dogger = ga(doggerWidth, doggerHeight, setup, ["img/dogger.png"]);
     dogger.start();
 
-    var dog, stuff, obstacle, barksLeft, bark, alerta, gameScene, GameOverScene, positionX, positionY, stuffAmount, size, tilesX, tilesY, tiles, stuffX, stuffIndex, obstacleIndex, obstacleX;
+    var dog,
+        alerta,
+        bark,
+        barksLeft,
+        GameOverScene,
+        gameScene,
+        obstacle,
+        obstacleIndex,
+        obstacleX,
+        positionX,
+        positionY,
+        size,
+        stuff,
+        stuffAmount,
+        stuffIndex,
+        stuffX,
+        tiles,
+        tilesX,
+        tilesY;
+
     var win = 0;
 
     alerta = dogger.text(" ", "20px Verdana", "fuchsia", 120, 120);
@@ -114,6 +133,7 @@
         if (dogger.key.space.isDown) {
             obstacles = obstacles.filter(function(obstacle) {
                 gameScene.remove(obstacle);
+                tiles.push([obstacle.x, obstacle.y]);
                 return false;
             });
         }
