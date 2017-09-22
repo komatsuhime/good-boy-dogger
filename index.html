@@ -13,7 +13,7 @@
     <script>
     var doggerWidth = 480;
     var doggerHeight = 480;
-    var dogger = ga(doggerWidth, doggerHeight, setup, ["img/dogger.png"]);
+    var dogger = ga(doggerWidth, doggerHeight, setup, ["img/dogger.png", "img/pizza.png"]);
     dogger.start();
 
     var dog,
@@ -57,7 +57,7 @@
         dog.x = dogger.canvas.width / 2 - dog.width;
         dog.y = dogger.canvas.height / 2 - dog.height;
         gameScene.addChild(dog);
-        
+
         dog.draggable = true;
 
         // bark = dogger.keyboard(98);
@@ -79,7 +79,7 @@
         stuffs = [];
         for (var k = 0; k < stuffAmount; k++) {
             //stuff = dogger.rectangle(size, size, "orange");
-            stuff = dogger.sprite("img/dogger.png");
+            stuff = dogger.sprite("img/pizza.png");
             stuffIndex = Math.floor(Math.random() * tiles.length);
             stuffX = tiles[stuffIndex];
             stuff.x = stuffX[0];
@@ -101,8 +101,7 @@
         dogger.contain(dog, dogger.stage.localBounds);
 
         if (dogger.key.leftArrow.isDown || dogger.key.upArrow.isDown || dogger.key.rightArrow.isDown || dogger.key.downArrow.isDown) {
-            //obstacle = dogger.rectangle(size, size, "grey");
-   									obstacle = dogger.sprite("img/dogger.png");
+            obstacle = dogger.rectangle(size, size, "grey");
             obstacleIndex = Math.floor(Math.random() * tiles.length);
             obstacleX = tiles[obstacleIndex];
             obstacle.x = obstacleX[0];
@@ -135,14 +134,16 @@
         }
 
         if (dogger.key.space.isDown) {
-												barksLeft += 1;
-												
-												if (barksLeft <= 3){
-     obstacles.forEach(function(obstacle){
-     						
-     				obstacle.x = size * dogger.randomInt(0, maxTiles);
-     				obstacle.y = size * dogger.randomInt(0, maxTiles);
-     });        }}
+            barksLeft += 1;
+
+            if (barksLeft <= 3) {
+                obstacles.forEach(function(obstacle) {
+
+                    obstacle.x = size * dogger.randomInt(0, maxTiles);
+                    obstacle.y = size * dogger.randomInt(0, maxTiles);
+                });
+            }
+        }
 
         var obstacleHit = false;
 
