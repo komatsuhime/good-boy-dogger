@@ -50,6 +50,7 @@
         maxTiles = doggerWidth / size;
         stuffAmount = 10;
         barksLeft = 0;
+        bark = false;
 
 
         gameScene = dogger.group();
@@ -58,7 +59,7 @@
         dog.y = dogger.canvas.height / 2 - dog.height;
         gameScene.addChild(dog);
 
-        dog.draggable = true;
+        //dog.draggable = true;
 
         // bark = dogger.keyboard(98);
         // bark.press = function() {
@@ -134,15 +135,13 @@
         }
 
         if (dogger.key.space.isDown) {
-            barksLeft += 1;
 
-            if (barksLeft <= 3) {
+         
                 obstacles.forEach(function(obstacle) {
-
                     obstacle.x = size * dogger.randomInt(0, maxTiles);
                     obstacle.y = size * dogger.randomInt(0, maxTiles);
                 });
-            }
+                         
         }
 
         var obstacleHit = false;
