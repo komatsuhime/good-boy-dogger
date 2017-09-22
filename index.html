@@ -49,6 +49,7 @@
         size = 48;
         maxTiles = doggerWidth / size;
         stuffAmount = 10;
+        barksLeft = 0;
 
 
         gameScene = dogger.group();
@@ -56,6 +57,8 @@
         dog.x = dogger.canvas.width / 2 - dog.width;
         dog.y = dogger.canvas.height / 2 - dog.height;
         gameScene.addChild(dog);
+        
+        dog.draggable = true;
 
         // bark = dogger.keyboard(98);
         // bark.press = function() {
@@ -75,7 +78,8 @@
         stuffX = [];
         stuffs = [];
         for (var k = 0; k < stuffAmount; k++) {
-            stuff = dogger.rectangle(size, size, "orange");
+            //stuff = dogger.rectangle(size, size, "orange");
+            stuff = dogger.sprite("img/dogger.png");
             stuffIndex = Math.floor(Math.random() * tiles.length);
             stuffX = tiles[stuffIndex];
             stuff.x = stuffX[0];
@@ -97,8 +101,8 @@
         dogger.contain(dog, dogger.stage.localBounds);
 
         if (dogger.key.leftArrow.isDown || dogger.key.upArrow.isDown || dogger.key.rightArrow.isDown || dogger.key.downArrow.isDown) {
-            obstacle = dogger.rectangle(size, size, "grey");
-
+            //obstacle = dogger.rectangle(size, size, "grey");
+   									obstacle = dogger.sprite("img/dogger.png");
             obstacleIndex = Math.floor(Math.random() * tiles.length);
             obstacleX = tiles[obstacleIndex];
             obstacle.x = obstacleX[0];
@@ -131,20 +135,20 @@
         }
 
         if (dogger.key.space.isDown) {
-
+												barksLeft += 1;
+												
+												if (barksLeft <= 3){
      obstacles.forEach(function(obstacle){
      						
-     				obstacle.x = size * dogger.randomInt(0, 9);
-     				obstacle.y = size * dogger.randomInt(0, 9);
-     });        }
+     				obstacle.x = size * dogger.randomInt(0, maxTiles);
+     				obstacle.y = size * dogger.randomInt(0, maxTiles);
+     });        }}
 
         var obstacleHit = false;
 
         obstacles.forEach(function(obstacle) {
             if (dogger.hitTestRectangle(dog, obstacle)) {
                 obstacleHit = true;
-            } else {
-                // obstacleHit = false;
             }
         });
 
@@ -171,7 +175,7 @@
     <p>Move and pick up the orange squares to win. You're a dog, by the way.</p>
     <ul>
         <li>Arrow keys: move</li>
-        <li>Spacebar: bark (remove all obstacles)</li>
+        <li>Spacebar: bark (shuffle all obstacles)</li>
     </ul>
 </body>
 
