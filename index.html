@@ -2,18 +2,23 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Good Boy Dogger</title>
+    <meta charset="utf-8">
+    <title>
+        Good Boy Dogger
+    </title>
     <!-- by Carla Faroldi -->
-    <script src="js/ga.js"></script>
-    <script src="js/plugins.js"></script>
+    <script src="js/ga.js">
+    </script>
+    <script src="js/plugins.js">
+    </script>
+    </meta>
 </head>
 
 <body>
     <script>
     var doggerWidth = 480;
     var doggerHeight = 480;
-    var dogger = ga(doggerWidth, doggerHeight, setup, ["img/dogger.png", "img/pizza.png"]);
+    var dogger = ga(doggerWidth, doggerHeight, setup, ["img/dogger.png", "img/pizzas.png"]);
     dogger.start();
 
     var dog,
@@ -54,6 +59,17 @@
 
 
         gameScene = dogger.group();
+
+        tiles = [];
+
+        for (var i = 0; i < maxTiles; i++) {
+            for (var j = 0; j < maxTiles; j++) {
+                tilesX = i * size;
+                tilesY = j * size;
+                tiles.push([tilesX, tilesY]);
+            }
+        }
+
         dog = dogger.sprite("img/dogger.png");
         dog.x = dogger.canvas.width / 2 - dog.width;
         dog.y = dogger.canvas.height / 2 - dog.height;
@@ -66,21 +82,10 @@
         //     console.log(bark);
         // };
 
-        tiles = [];
-
-        for (var i = 0; i < maxTiles; i++) {
-            for (var j = 0; j < maxTiles; j++) {
-                tilesX = i * size;
-                tilesY = j * size;
-                tiles.push([tilesX, tilesY]);
-            }
-        }
-
         stuffX = [];
         stuffs = [];
         for (var k = 0; k < stuffAmount; k++) {
-            //stuff = dogger.rectangle(size, size, "orange");
-            stuff = dogger.sprite("img/pizza.png");
+            stuff = dogger.sprite("img/pizzas.png");
             stuffIndex = Math.floor(Math.random() * tiles.length);
             stuffX = tiles[stuffIndex];
             stuff.x = stuffX[0];
@@ -102,6 +107,7 @@
         dogger.contain(dog, dogger.stage.localBounds);
 
         if (dogger.key.leftArrow.isDown || dogger.key.upArrow.isDown || dogger.key.rightArrow.isDown || dogger.key.downArrow.isDown) {
+
             obstacle = dogger.rectangle(size, size, "grey");
             obstacleIndex = Math.floor(Math.random() * tiles.length);
             obstacleX = tiles[obstacleIndex];
@@ -123,6 +129,7 @@
         stuffs = stuffs.filter(function(stuff) {
             if (dogger.hit(dog, stuff)) {
                 win += 1;
+                tiles.push([stuff.x, stuff.y]);
                 gameScene.remove(stuff);
                 return false;
             } else {
@@ -135,13 +142,26 @@
         }
 
         if (dogger.key.space.isDown) {
+            var dogPos = [dog.x, dog.y];
+            console.log(dogPos);
+            obstacles.forEach(function(obstacle) {
+                var obsX = obstacle.x;
+                var obsY = obstacle.y;
 
-         
-                obstacles.forEach(function(obstacle) {
-                    obstacle.x = size * dogger.randomInt(0, maxTiles);
-                    obstacle.y = size * dogger.randomInt(0, maxTiles);
-                });
-                         
+                var obsPosIndex = Math.floor(Math.random() * tiles.length);
+                var obsPos = tiles[obsPosIndex];
+                if (dog.x == obsPos[0] && dog.y == obsPos[1]) {
+                    return false;
+                } else {
+                    obstacle.x = obsPos[0];
+                    obstacle.y = obsPos[1];
+                    tiles.splice(obsPosIndex, 1);
+                    tiles.push([obsX, obsY]);
+                }
+                console.log("X: " + obstacle.x + " - Y: " + obstacle.y + " - " + "X: " + dog.x + " - Y: " + dog.y);
+                dogger.pause();
+                dogger.wait(125, resume);
+            });
         }
 
         var obstacleHit = false;
@@ -172,10 +192,16 @@
         }
     }
     </script>
-    <p>Move and pick up the orange squares to win. You're a dog, by the way.</p>
+    <p>
+        Move and pick up the orange squares to win. You're a dog, by the way.
+    </p>
     <ul>
-        <li>Arrow keys: move</li>
-        <li>Spacebar: bark (shuffle all obstacles)</li>
+        <li>
+            Arrow keys: move
+        </li>
+        <li>
+            Spacebar: bark (shuffle all obstacles)
+        </li>
     </ul>
 </body>
 
