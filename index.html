@@ -12,10 +12,19 @@
     <script src="js/plugins.js">
     </script>
     </meta>
+    <style>
+    body {
+        margin: 0;
+    }
+    </style>
 </head>
 
 <body>
     <script>
+    // Added for itch.io
+    window.onload = function() { window.focus(); }
+    window.onclick = function() { window.focus(); }
+
     var doggerWidth = 480;
     var doggerHeight = 480;
     var dogger = ga(doggerWidth, doggerHeight, setup, ["img/dogger.png", "img/pizzas.png", "img/grass.png"]);
@@ -49,12 +58,7 @@
     alerta.y = 120;
 
     function setup() {
-        dogger.canvas.style.border = "1px black dashed";
         dogger.backgroundColor = "white";
-
-        // ground = dogger.sprite("img/grass.png");
-
-
 
         size = 48;
         maxTiles = doggerWidth / size;
@@ -201,7 +205,7 @@
         }
     }
     </script>
-    <p>
+    <!--     <p>
         Move and pick up the food to win. You're a dog, by the way.
     </p>
     <ul>
@@ -211,7 +215,7 @@
         <li>
             Spacebar: bark (shuffle all obstacles)
         </li>
-    </ul>
+    </ul> -->
 </body>
 
 </html>
