@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1" charset="utf-8">
     <title>
         Good Boy Dogger
     </title>
@@ -11,6 +11,7 @@
     </script>
     <script src="js/plugins.js">
     </script>
+    <script src="js/hammer.min.js"></script>
     </meta>
 </head>
 
@@ -20,6 +21,11 @@
     var doggerHeight = 480;
     var dogger = ga(doggerWidth, doggerHeight, setup, ["img/dogger.png", "img/pizzas.png", "img/grass.png"]);
     dogger.start();
+
+
+    var mc = new Hammer(window);
+    mc.get('swipe').set({ direction: Hammer.DIRECTION_ALL });
+
 
     var dog,
         alerta,
@@ -47,6 +53,9 @@
     alerta = dogger.text(" ", "20px Verdana", "fuchsia", 120, 120);
     alerta.x = 120;
     alerta.y = 120;
+
+
+
 
     function setup() {
         dogger.canvas.style.border = "1px black dashed";
@@ -84,6 +93,7 @@
         dog.y = dogger.canvas.height / 2 - dog.height;
         gameScene.addChild(dog);
 
+
         //dog.draggable = true;
 
         // bark = dogger.keyboard(98);
@@ -109,31 +119,73 @@
 
         dogger.fourKeyController(dog, size, 38, 39, 40, 37);
         dogger.state = play;
+
+        mc.on("swipeleft", function() {
+            dog.vx -= size;
+            setTimeout(function () { dog.vx = 0; }, 1000/60);
+            createObstacle();
+            
+        });
+
+        mc.on("swiperight", function() {
+            dog.vx += size;
+            setTimeout(function () { dog.vx = 0; }, 1000/60);
+            createObstacle();
+            
+        });
+
+        mc.on("swipeup", function() {
+            dog.vy -= size;
+            setTimeout(function () { dog.vy = 0; }, 1000/60);
+            createObstacle();
+            
+        });
+
+        mc.on("swipedown", function() {
+            dog.vy += size;
+            setTimeout(function () { dog.vy = 0; }, 1000/60);
+            createObstacle();
+            
+        });
+
+    }
+
+    function createObstacle() {
+        obstacle = dogger.rectangle(size, size, "grey");
+        obstacleIndex = Math.floor(Math.random() * tiles.length);
+        obstacleX = tiles[obstacleIndex];
+        obstacle.x = obstacleX[0];
+        obstacle.y = obstacleX[1];
+        tiles.splice(obstacleIndex, 1);
+
+        obstacles.push(obstacle);
+        gameScene.addChild(obstacle);
+
+
+    }
+
+
+    function resume() {
+        dogger.resume();
     }
 
     function play() {
         dogger.move(dog);
         dogger.contain(dog, dogger.stage.localBounds);
 
+        console.log(dog.vx, dog.vy);
+
+
+
+
         if (dogger.key.leftArrow.isDown || dogger.key.upArrow.isDown || dogger.key.rightArrow.isDown || dogger.key.downArrow.isDown) {
-
-            obstacle = dogger.rectangle(size, size, "grey");
-            obstacleIndex = Math.floor(Math.random() * tiles.length);
-            obstacleX = tiles[obstacleIndex];
-            obstacle.x = obstacleX[0];
-            obstacle.y = obstacleX[1];
-            tiles.splice(obstacleIndex, 1);
-
-            obstacles.push(obstacle);
-            gameScene.addChild(obstacle);
-
+            createObstacle();
             dogger.pause();
             dogger.wait(125, resume);
         }
 
-        function resume() {
-            dogger.resume();
-        }
+
+
 
         stuffs = stuffs.filter(function(stuff) {
             if (dogger.hit(dog, stuff)) {
