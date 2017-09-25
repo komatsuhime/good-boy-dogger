@@ -18,7 +18,7 @@
     <script>
     var doggerWidth = 480;
     var doggerHeight = 480;
-    var dogger = ga(doggerWidth, doggerHeight, setup, ["img/dogger.png", "img/pizzas.png"]);
+    var dogger = ga(doggerWidth, doggerHeight, setup, ["img/dogger.png", "img/pizzas.png", "img/grass.png"]);
     dogger.start();
 
     var dog,
@@ -27,6 +27,7 @@
         barksLeft,
         GameOverScene,
         gameScene,
+        ground,
         obstacle,
         obstacleIndex,
         obstacleX,
@@ -51,11 +52,19 @@
         dogger.canvas.style.border = "1px black dashed";
         dogger.backgroundColor = "white";
 
+        // ground = dogger.sprite("img/grass.png");
+
+
+
         size = 48;
         maxTiles = doggerWidth / size;
         stuffAmount = 10;
         barksLeft = 0;
         bark = false;
+
+        ground = dogger.tilingSprite(doggerWidth, doggerHeight, "img/grass.png");
+        ground.alpha = 0.5;
+        dogger.stage.putCenter(ground);
 
 
         gameScene = dogger.group();
