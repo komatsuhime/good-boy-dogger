@@ -27,7 +27,7 @@
 
     var doggerWidth = 480;
     var doggerHeight = 480;
-    var dogger = ga(doggerWidth, doggerHeight, setup, ["img/dogger.png", "img/pizzas.png", "img/grass.png"]);
+    var dogger = ga(doggerWidth, doggerHeight, setup, ["img/dogger.png", "img/pizzas.png", "img/grass.png", "img/bark.png", "img/button.png"]);
     dogger.start();
 
     var dog,
@@ -63,7 +63,7 @@
         size = 48;
         maxTiles = doggerWidth / size;
         stuffAmount = 10;
-        barksLeft = 0;
+        barksLeft = 3;
         bark = false;
 
         ground = dogger.tilingSprite(doggerWidth, doggerHeight, "img/grass.png");
@@ -156,25 +156,30 @@
 
         if (dogger.key.space.isDown) {
             var dogPos = [dog.x, dog.y];
-            console.log(dogPos);
-            obstacles.forEach(function(obstacle) {
-                var obsX = obstacle.x;
-                var obsY = obstacle.y;
+            // console.log(dogPos);
+            if (barksLeft > 0) {
 
-                var obsPosIndex = Math.floor(Math.random() * tiles.length);
-                var obsPos = tiles[obsPosIndex];
-                if (dog.x == obsPos[0] && dog.y == obsPos[1]) {
-                    return false;
-                } else {
-                    obstacle.x = obsPos[0];
-                    obstacle.y = obsPos[1];
-                    tiles.splice(obsPosIndex, 1);
-                    tiles.push([obsX, obsY]);
-                }
-                console.log("X: " + obstacle.x + " - Y: " + obstacle.y + " - " + "X: " + dog.x + " - Y: " + dog.y);
-                dogger.pause();
-                dogger.wait(125, resume);
-            });
+                obstacles.forEach(function(obstacle) {
+                    var obsX = obstacle.x;
+                    var obsY = obstacle.y;
+
+                    var obsPosIndex = Math.floor(Math.random() * tiles.length);
+                    var obsPos = tiles[obsPosIndex];
+                    if (dog.x == obsPos[0] && dog.y == obsPos[1]) {
+                        return false;
+                    } else {
+                        obstacle.x = obsPos[0];
+                        obstacle.y = obsPos[1];
+                        tiles.splice(obsPosIndex, 1);
+                        tiles.push([obsX, obsY]);
+                    }
+                    // console.log("X: " + obstacle.x + " - Y: " + obstacle.y + " - " + "X: " + dog.x + " - Y: " + dog.y);
+
+                    dogger.pause();
+                    dogger.wait(125, resume);
+                });
+                barksLeft -= 1;
+            }
         }
 
         var obstacleHit = false;
