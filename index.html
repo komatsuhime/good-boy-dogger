@@ -25,9 +25,9 @@
     window.onload = function() { window.focus(); }
     window.onclick = function() { window.focus(); }
 
-    var doggerWidth = 480;
-    var doggerHeight = 480;
-    var dogger = ga(doggerWidth, doggerHeight, setup, ["img/dogger.png", "img/pizzas.png", "img/grass.png", "img/flowers.png", "sound/bark.mp3", "sound/doggersong.mp3", "sound/eat.mp3"]);
+    var doggerWidth = 192;
+    var doggerHeight = 192;
+    var dogger = ga(doggerWidth, doggerHeight, setup, ["img/dogger.png", "img/pizzas.png", "img/grass.png", "img/flowers.png", "sound/bark.mp3", "sound/doggersongedit.mp3", "sound/eat.mp3"]);
     dogger.start();
 
     var dog,
@@ -37,6 +37,8 @@
         GameOverScene,
         gameScene,
         ground,
+        dogPos,
+        dogPosIndex,
         obstacle,
         obstacleIndex,
         obstacleX,
@@ -49,24 +51,31 @@
         stuffX,
         tiles,
         tilesX,
+        world,
         tilesY;
 
     var win = 0;
 
     var bark = dogger.sound("sound/bark.mp3"),
-        eat = dogger.sound("sound/eat.mp3"),
-        music = dogger.sound("sound/doggersong.mp3");
+        eat = dogger.sound("sound/eat.mp3")
+    // ,music = dogger.sound("sound/doggersongedit.mp3")
+    ;
 
-        music.loop = true;
+    // music.loop = true;
+    // music.volume = 0.5;
+    bark.volume = 0.6;
+    eat.volume = 0.6;
 
-
+    dogPosIndex = "";
     // alerta = dogger.text(" ", "20px Verdana", "fuchsia", 120, 120);
     // alerta.x = 120;
     // alerta.y = 120;
 
     function setup() {
-        music.play()
         dogger.backgroundColor = "white";
+
+        // music.play()
+
 
         size = 48;
         maxTiles = doggerWidth / size;
@@ -76,7 +85,6 @@
         ground = dogger.tilingSprite(doggerWidth, doggerHeight, "img/grass.png");
         ground.alpha = 0.5;
         dogger.stage.putCenter(ground);
-
 
         gameScene = dogger.group();
 
@@ -119,20 +127,82 @@
         dogger.move(dog);
         dogger.contain(dog, dogger.stage.localBounds);
 
+        function isItInArray(tiles, query) {
+            for (var z = 0; z < tiles.length; z++) {
+                if (tiles[z][0] == query[0] && tiles[z][1] == query[1]) {
+                    dogPosIndex = z;
+                    return true; // Found it
+                }
+            }
+            dogPosIndex = null;
+            return false; // Not found
+        }
+
+
+        function getSurroundingCords(x, y) {
+            var sRight,
+                sLeft,
+                sUp,
+                sDown;
+
+            var cords = [];
+
+            sRight = x - size;
+            sLeft = x + size;
+            sUp = y - size;
+            sDown = y + size;
+
+            cords.push([sRight, y], [sLeft, y], [x, sUp], [x, sDown]);
+
+            return cords;
+        }
+
+
+
+
         if (dogger.key.leftArrow.isDown || dogger.key.upArrow.isDown || dogger.key.rightArrow.isDown || dogger.key.downArrow.isDown) {
+            if (tiles.length == 0) {
+                console.log("pausa");
+                dogger.pause();
+            } else {
+                var dogPos = [dog.x, dog.y];
+                if (isItInArray(tiles, dogPos)) {
+                    console.log(tiles[dogPosIndex]+ " - index: "+dogPosIndex);
+                    tiles.splice(dogPosIndex, 1);
+                } else {
+                    tiles.push(dogPos);
+                }
 
-            obstacle = dogger.sprite("img/flowers.png");
-            obstacleIndex = Math.floor(Math.random() * tiles.length);
-            obstacleX = tiles[obstacleIndex];
-            obstacle.x = obstacleX[0];
-            obstacle.y = obstacleX[1];
-            tiles.splice(obstacleIndex, 1);
+                obstacle = dogger.sprite("img/flowers.png");
+                if (tiles.length > 0) {
+                    obstacleIndex = Math.floor(Math.random() * tiles.length);
+                    obstacleX = tiles[obstacleIndex];
+                    obstacle.x = obstacleX[0];
+                    obstacle.y = obstacleX[1];
+                    tiles.splice(obstacleIndex, 1);
 
-            obstacles.push(obstacle);
-            gameScene.addChild(obstacle);
+                    obstacles.push(obstacle);
+                    gameScene.addChild(obstacle);
+                }
 
-            dogger.pause();
-            dogger.wait(125, resume);
+
+                dogger.pause();
+                dogger.wait(125, resume);
+
+                var dogS = getSurroundingCords(dog.x, dog.y);
+                dogS.forEach(function(s) {
+                    if (isItInArray(tiles, s)) {
+                        console.log("desocupado " + s);
+                    } else {
+                        console.log("ocupado " + s);
+                    }
+                });
+
+                console.log("---");
+            }
+
+
+
         }
 
         function resume() {
@@ -155,8 +225,7 @@
 
 
         if (dogger.key.space.isDown) {
-            var dogPos = [dog.x, dog.y];
-            // console.log(dogPos);
+
             if (barksLeft > 0) {
                 bark.play();
                 obstacles.forEach(function(obstacle) {
@@ -174,9 +243,8 @@
                         tiles.push([obsX, obsY]);
                     }
                     // console.log("X: " + obstacle.x + " - Y: " + obstacle.y + " - " + "X: " + dog.x + " - Y: " + dog.y);
-                    barking = false;
                     dogger.pause();
-                    dogger.wait(125, resume);
+                    dogger.wait(250, resume);
                 });
                 barksLeft -= 1;
             }
@@ -209,6 +277,11 @@
                 dog.y -= size;
             }
         }
+
+
+
+
+
 
         // if (win == stuffAmount) {
         //     alerta.content = "You won!";
